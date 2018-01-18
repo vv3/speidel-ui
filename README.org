@@ -1,0 +1,19 @@
+#+TITLE: Speidel webapp
+#+AUTHOR: Vegard Vesterheim
+#+EMAIL: vegard.vesterheim@uninett.no
+
+A simple web app to administer beer recipes on the Braumeister Speidel
+brewing machine.
+
+Recipes can be uploaded to the Speidel via 3 mechanisms:
+
+- registering recipe data directly in the web page
+- dropping a BeerXML-file from your local computer to the web page
+- searching and downloading your personal recipes from
+  https://brewersfriend.com/ (requires access to API, see below)
+
+* How to enable Brewersfriend API
+
+Copy ./data/api_key_sample.js to ./data/api_key.js, and edit its contents.
+
+
