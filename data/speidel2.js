@@ -16,13 +16,30 @@ var app = new Vue({
         hop_times: [60,15,5,0,0,0],
         boil_time: 60,
         show_manual_form: false,
+        include_snapshots: true,
     },
 
+    watch: {
+        recipe_candidates: function () {
+            this.populateRecipesfield();
+        }
+    },
     // FIXME, doesn't work
     computed: {
+        recipe_candidates: function () {
+            if (! this.bfrecipes || this.bfrecipes.length == 0) {
+                return [];
+            }
+            if (this.include_snapshots) {
+                return this.bfrecipes.recipes;
+            } else {
+                 return this.bfrecipes.recipes.
+                    filter(function(x) {return x.recipe.snapshot == 0 });
+            }
+        },
         num_bfrecipes: function () {
             if ('recipes' in this.bfrecipes) {
-                return this.bfrecipes.recipes.length;
+                return this.recipe_candidates.length;
             } else {
                 return 0;
             }
@@ -34,12 +51,12 @@ var app = new Vue({
             let spice_steps_string = this.hop_times.join('X');
             let recipe_name = this.recipe_name.replace(/ /g,'_');
             return (
-                    [9,
-                     Math.round(this.mash_temps[0]),
-                     mash_steps_string,
-                     Math.round(this.boil_time),
-                     Math.round(100), // FIXME
-                     spice_steps_string].
+                [9,
+                 Math.round(this.mash_temps[0]),
+                 mash_steps_string,
+                 Math.round(this.boil_time),
+                 Math.round(100), // FIXME
+                 spice_steps_string].
                     join('X')+'.'+recipe_name
             );
         }
@@ -72,24 +89,16 @@ var app = new Vue({
                 );
             }
         },
-        gotBFRecipes: function (data) {
-            this.loading_bf_recipes = false;
-            this.bfrecipes = data;
-            // app.$data.num_bfrecipes = this.bfrecipes.recipes.length
-            if ('recipes' in this.bfrecipes) {
-            console.log ("got "+this.bfrecipes.recipes.length+" BF data");
-            $("#bfname_row").css({ 'visibility': "visible" });
-            var recipe_names = this.bfrecipes.recipes.
-                    filter(function(x) {return x.recipe.snapshot == 0}).
-                    map(function(x) {return {label: x.recipe.title, value: x}});
+        populateRecipesfield: function () {
             $("#bfname").autocomplete({
-                source: recipe_names,
+                source: this.recipe_candidates.
+                    map(function(x) {return {label: x.recipe.title+' ('+x.recipe.updated_at.substring(0,10)+')', value: x}}),
                 select: function( event, ui ) {
                     $("#bfname").val(ui.item.value.recipe.title); 
                     app.$data.bfrecipe = ui.item.value; // FIXME
                     $("#bf_upload_button").html("<span>Upload <em>"+ui.item.value.recipe.title+"</em> to Speidel");
                     $("#bf_upload_button").css({ 'visibility': "visible" });
-
+                    
                     return false;
                 },
                 focus: function( event, ui ) {
@@ -97,9 +106,17 @@ var app = new Vue({
                     return false;
                 }
             });
-        }
-
         },
+        
+        gotBFRecipes: function (data) {
+            this.loading_bf_recipes = false;
+            this.bfrecipes = data;
+            // app.$data.num_bfrecipes = this.bfrecipes.recipes.length
+            if ('recipes' in this.bfrecipes) {
+                this.populateRecipesfield();
+            }
+        },
+
         uploadFormRecipe: function (data) {
             console.log("Uploading form recipe: "+this.recipe_string);
             speidellib.sendrz

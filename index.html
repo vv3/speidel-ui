@@ -55,7 +55,10 @@
                                   class="glyphicon glyphicon-refresh">
                             </span>
                         </label>
+                        <label for="checkbox"> <small>(include snapshot recipes?)</small></label>
+                        <input type="checkbox" v-on:click.stop="populateRecipesfield" v-model="include_snapshots">
                         <input class="form-control" id="bfname" name="bfname">
+
                         <button v-on:click.stop="uploadBFRecipe"
                                 class="btn btn-success"
                                 id="bf_upload_button">
@@ -129,7 +132,7 @@
                             Speidel Recipe:
                         <span>{{ recipe_string }}</span>
                         </small>
-                        <button class="btn btn-success" v-on:click.stop="uploadFormRecipe">Upload recipe data to Speidel</button>
+                        <button class="btn btn-success"  v-bind:style="{visibility: speidelvisible}" v-on:click.stop="uploadFormRecipe">Upload recipe data to Speidel</button>
                         </div>
                     </div>
                 </div>

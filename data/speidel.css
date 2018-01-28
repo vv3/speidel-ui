@@ -45,10 +45,6 @@
     padding: 2px;
 }
 
-#bfname_row {
-    visibility: hidden;
-}
-
 #bf_upload_button {
     margin-top: 10px;
     visibility: hidden;
