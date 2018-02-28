@@ -17,3 +17,10 @@ Recipes can be uploaded to the Speidel via 3 mechanisms:
 Copy ./data/api_key_sample.js to ./data/api_key.js, and edit its contents.
 
 
+
+* Check that speidel web interface is alive
+
+`while [ 1 ]; do curl --connect-timeout 2 -sf http://speidel >/dev/null || (
+notify-send "Speidel is offline!" && paplay
+/usr/share/sounds/ubuntu/notifications/Xylo.ogg ); sleep 10; done
+`
