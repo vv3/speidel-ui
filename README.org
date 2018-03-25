@@ -20,7 +20,12 @@ Copy ./data/api_key_sample.js to ./data/api_key.js, and edit its contents.
 
 * Check that speidel web interface is alive
 
-`while [ 1 ]; do curl --connect-timeout 2 -sf http://speidel >/dev/null || (
-notify-send "Speidel is offline!" && paplay
-/usr/share/sounds/ubuntu/notifications/Xylo.ogg ); sleep 10; done
-`
+#+BEGIN_SRC sh
+while [ 1 ]; do 
+   curl --retry-delay 1 --retry 3 --connect-timeout 2 -sf http://speidel >/dev/null || 
+   ( notify-send "Speidel is offline!" && paplay /usr/share/sounds/gnome/default/alerts/bark.ogg ); 
+   sleep 10; 
+done
+
+#+END_SRC
+
