@@ -122,7 +122,7 @@
                 map(function(e) {return [e[1],e[0]].join('X')}).join('X')
 
         let recipe_spices = recipe.spices.
-                filter(function(x){ return (x.use == 'Boil') });
+                filter(function(x){ return (x.use == 'Boil' || x.use == 'Whirlpool') });
         let spice_steps_times = recipe_spices.
                 map(function(x){ return x.time });
         

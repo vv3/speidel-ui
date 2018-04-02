@@ -159,10 +159,10 @@ var app = new Vue({
             let mash_steps_string = recipe_mash_elements.map(function(e) {return [e[1],e[0]].join('X')}).join('X')
 
             let hop_times = recipe.hops.
-                    filter(function(x) {return x.hopuse == 'Boil'}).
+                    filter(function(x) {return x.hopuse == 'Boil' || x.hopuse == 'Whirlpool'}).
                     map(function (x) {return x.hoptime});
             let other_times = recipe.others.
-                    filter(function(x) {return x.hopuse == 'Boil'}).
+                    filter(function(x) {return x.hopuse == 'Boil' || x.hopuse == 'Whirlpool'}).
                     map(function (x) {return x.othertime});
             hop_times = hop_times.concat(other_times);
             let spice_steps_unique = hop_times.filter(function(value, index, self) { //array unique
