@@ -171,7 +171,7 @@ var app = new Vue({
             let spice_steps_string = spice_steps_unique.concat(spice_additions).slice(0,6).join('X');
 
             let name = recipe.recipe.title;
-            let boil_time=recipe.boiltime || 60;
+            let boil_time=recipe.recipe.boiltime || 60;
             let recipe_name = recipe.recipe.title.replace(/ /g,'_');
             let recipe_string =
                     [recipe_no,
