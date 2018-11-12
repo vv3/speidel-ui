@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Speidel Tempwatch</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://unpkg.com/vue"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
+        <script src="data/speidellib.js"></script>
+        <script src="data/brewersfriend.js"></script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+        <link href="data/speidel.css" rel="stylesheet" type="text/css">
+        <script src="data/brauhaus.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+        <!-- <script src="brauhaus-beerxml.min.js"></script> -->
+        <script src="data/import.js"></script>
+        <script src="data/globals.js"></script>
+        <script src="data/import.js"></script>
+    </head>
+    <body>
+        <form>
+            Warn temp: <input id="warntemp" value="34">
+        </form>
+        <p>Current Temp: <span id="temp"></span></p>
+        <p>Diff Temp: <span id="diff"></span></p>
+        <script>
+         var speidel = 'speidel';
+         var temp = speidellib.current_temp(speidel);
+         console.log ("current_temp returned: "+temp)
+         var diff = parseFloat($("#warntemp").val()) - temp;
+         var diffstr = diff.toString();
+         $("#diff").text(diff.toString());
+         $("#temp").text(temp);
+        </script>
+    </body>
+</html>

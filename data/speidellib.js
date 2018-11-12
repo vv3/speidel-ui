@@ -43,6 +43,22 @@
         exports.ajax('POST', 'http://'+speidel+"/rz.txt", 'rz='+recipe, returndata, failure);
     }
 
+    exports.getbm = function (speidel) {
+        console.log ("Getting data from "+speidel);
+        var bm = $.ajax({url: 'http://'+speidel+"/bm.txt", async: false}).responseText;
+
+        return bm;
+    }
+
+    exports.current_temp = function (speidel) {
+        var response = exports.getbm(speidel);
+        var temptxt = response.split(';')[2].split('X')[5];
+        temptxt = temptxt.trim();
+        var temp = parseFloat(temptxt);
+        console.log ("Got temp from "+speidel+": "+temp);
+        return temp;
+    }
+
     // Stolen from bm_controll-min.js
     exports.parse_recipe = function (dataString){
 	var dataAndNameArray = dataString.split(".");
@@ -116,6 +132,8 @@
         recipe_mash_times = recipe_mash_times.concat(mash_steps_times).slice(0,5);
         recipe_mash_temps = recipe_mash_temps.concat(mash_steps_temps).slice(0,5);
 
+        // FIXME, some recipes specify adding spice/hop in stage 'First wort',
+        // which probably means at boil start
         let recipe_mash_elements = recipe_mash_times.
                 map(function (e,i) { return [e,recipe_mash_temps[i]] });
         let mash_steps_string = recipe_mash_elements.
@@ -132,8 +150,6 @@
                 }).sort(function(a,b) {return a-b}).reverse();
         let spice_steps_string = spice_steps_unique.concat(spice_additions).slice(0,6).join('X');
         let boil_time=recipe.boilTime || 60;
-        // FIXME, some recipes specify adding spice/hop in stage 'First wort',
-        // which probably means at boil start
         let recipe_name = recipe.name.replace(/ /g,'_');
         let recipe_string =
                 [recipe_no,
