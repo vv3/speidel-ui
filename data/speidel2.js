@@ -162,7 +162,7 @@ var app = new Vue({
                     filter(function(x) {return x.hopuse == 'Boil' || x.hopuse == 'Whirlpool'}).
                     map(function (x) {return x.hoptime});
             let other_times = recipe.others.
-                    filter(function(x) {return x.hopuse == 'Boil' || x.hopuse == 'Whirlpool'}).
+                    filter(function(x) {return x.otheruse == 'Boil' || x.otheruse == 'Whirlpool'}).
                     map(function (x) {return x.othertime});
             hop_times = hop_times.concat(other_times);
             let spice_steps_unique = hop_times.filter(function(value, index, self) { //array unique
