@@ -14,7 +14,7 @@
             processData: false,
             contentType: false,
             async:true,
-            timeout:10000,
+            timeout:30000,
             beforeSend:function(obj){
 	        console.log("Before Post ("+api_url+"): "+ new Date());
             }
