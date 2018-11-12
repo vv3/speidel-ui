@@ -159,8 +159,27 @@ var app = new Vue({
             let mash_steps_string = recipe_mash_elements.map(function(e) {return [e[1],e[0]].join('X')}).join('X')
 
             let hop_times = recipe.hops.
-                    filter(function(x) {return x.hopuse == 'Boil' || x.hopuse == 'Whirlpool'}).
+                filter(function(x) {return x.hopuse == 'Boil' || x.hopuse == 'Whirlpool' || x.hopuse == 'Aroma'}).
+                map(function (x) {return x.hoptime});
+            let dryhop_times = recipe.hops.
+                filter(function(x) {return x.hopuse.toLowerCase() == 'dry hop'}).
                     map(function (x) {return x.hoptime});
+            
+            let icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Our Company//NONSGML v1.0//EN\n";
+            let now = new Date;
+            let fermentation_days = 14; // FIXME
+            let dts = dryhop_times.map(function(x) {return (now.valueOf() + (Number(fermentation_days) - x)*(60*60*24*1000))});
+            let dts_dates = dts.map(function (x) {return (new Date(x).toISOString())});
+            console.log (dts_dates);
+            let vevents = dts_dates.map(function (x) {return "BEGIN:VEVENT\nUID:foo@bar.com\nDTSTAMP:"+x+"\nDTSTART:" + x +"\nDTEND:" + x +"\nSUMMARY:Dry Hop time\nEND:VEVENT"});
+
+            icsMSG = icsMSG + vevents + "\nEND:VCALENDAR";
+            console.log ("ICS: "+icsMSG);
+
+            //$('.test').click(function(){
+            //    window.open( "data:text/calendar;charset=utf8," + escape(icsMSG));
+            //});
+            
             let other_times = recipe.others.
                     filter(function(x) {return x.otheruse == 'Boil' || x.otheruse == 'Whirlpool'}).
                     map(function (x) {return x.othertime});
