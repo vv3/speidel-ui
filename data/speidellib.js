@@ -132,6 +132,8 @@
                 }).sort(function(a,b) {return a-b}).reverse();
         let spice_steps_string = spice_steps_unique.concat(spice_additions).slice(0,6).join('X');
         let boil_time=recipe.boilTime || 60;
+        // FIXME, some recipes specify adding spice/hop in stage 'First wort',
+        // which probably means at boil start
         let recipe_name = recipe.name.replace(/ /g,'_');
         let recipe_string =
                 [recipe_no,
