@@ -8,7 +8,7 @@ var app = new Vue({
         bfrecipes: null,
         api_key: null,
         api_email: null,
-        loading_bf_recipes: true,
+        loading_bf_recipes: false,
         loading_speidel: false,
         recipe_name: 'Nameless',
         mash_times: [30,30,10,0,0],
