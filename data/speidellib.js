@@ -31,6 +31,22 @@
         });
         
     }
+    exports.sprintf = function (str) {
+        var args = arguments, i = 1;
+
+        return str.replace(/%(s|d|0\d+d)/g, function (x, type) {
+            var value = args[i++];
+            switch (type) {
+            case 's': return value;
+            case 'd': return parseInt(value, 10);
+            default:
+                value = String(parseInt(value, 10));
+                var n = Number(type.slice(1, -1));
+                return '0'.repeat(n).slice(value.length) + value;
+            }
+        });
+    }
+
     exports.getrz = function (speidel, returndata, failure) {
         exports.ajax('GET', 'http://'+speidel+"/rz.txt", '', returndata, failure);
     }

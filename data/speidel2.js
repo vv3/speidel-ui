@@ -14,6 +14,7 @@ var app = new Vue({
         mash_times: [30,30,10,0,0],
         mash_temps: [50,66,76,0,0],
         hop_times: [60,15,5,0,0,0],
+        hop_days: [7,0],
         boil_time: 60,
         show_manual_form: false,
         include_snapshots: true,
@@ -38,7 +39,7 @@ var app = new Vue({
             }
         },
         num_bfrecipes: function () {
-            if ('recipes' in this.bfrecipes) {
+            if (this.bfrecipes && 'recipes' in this.bfrecipes) {
                 return this.recipe_candidates.length;
             } else {
                 return 0;
@@ -59,7 +60,38 @@ var app = new Vue({
                  spice_steps_string].
                     join('X')+'.'+recipe_name
             );
+        },
+        ical_string: function () {
+            let icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Our Company//NONSGML v1.0//EN\n";
+            let now = new Date;
+            let fermentation_days = 14; // FIXME
+            let hop_days = this.hop_days.filter(function(x) {if (x > 0) {return (x)} });
+            let dts = hop_days.map(function(x) {return (now.valueOf() + (Number(fermentation_days) - x)*(60*60*24*1000))});
+            let dts_dates = dts.map(function (x) {
+                let d=new Date(x);
+                return (d.getYear()+1900+
+                        speidellib.sprintf('%02d',d.getMonth()+1)+
+                        speidellib.sprintf('%02d',d.getDate())+
+                        'T'+
+                        speidellib.sprintf('%02d',d.getUTCHours())+
+                        speidellib.sprintf('%02d',d.getMinutes())+
+                        '00Z')});
+            console.log (dts_dates);
+            let vevents = dts_dates.map(function (x, index)
+                                        {
+                                         return "BEGIN:VEVENT\n" +
+                                         "UID:hoptimes-" + app.$data.recipe_name + index +
+                                         "\nDTSTAMP:"+ x +
+                                         "\nDTSTART:" + x +
+                                         "\nDTEND:" + x +
+                                         "\nSUMMARY:Dry Hop time\nEND:VEVENT"});
+
+            icsMSG = icsMSG + vevents.join('\n') + "\nEND:VCALENDAR";
+            console.log ("ICS: \n"+icsMSG);
+            // iCAL format: 19980119T070000Z
+            $('#ical_button').attr('href', "data:text/calendar;charset=utf8," + escape(icsMSG));
         }
+
     },
     created(){
         if (typeof api_data !== 'undefined') {
@@ -71,7 +103,7 @@ var app = new Vue({
         if (this.speidel) {
             this.loadRecipes();
         }
-        this.refreshBFRecipes();
+        // this.refreshBFRecipes();
     },
     mounted(){
     },
@@ -164,21 +196,6 @@ var app = new Vue({
             let dryhop_times = recipe.hops.
                 filter(function(x) {return x.hopuse.toLowerCase() == 'dry hop'}).
                     map(function (x) {return x.hoptime});
-            
-            let icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Our Company//NONSGML v1.0//EN\n";
-            let now = new Date;
-            let fermentation_days = 14; // FIXME
-            let dts = dryhop_times.map(function(x) {return (now.valueOf() + (Number(fermentation_days) - x)*(60*60*24*1000))});
-            let dts_dates = dts.map(function (x) {return (new Date(x).toISOString())});
-            console.log (dts_dates);
-            let vevents = dts_dates.map(function (x) {return "BEGIN:VEVENT\nUID:foo@bar.com\nDTSTAMP:"+x+"\nDTSTART:" + x +"\nDTEND:" + x +"\nSUMMARY:Dry Hop time\nEND:VEVENT"});
-
-            icsMSG = icsMSG + vevents + "\nEND:VCALENDAR";
-            console.log ("ICS: "+icsMSG);
-
-            //$('.test').click(function(){
-            //    window.open( "data:text/calendar;charset=utf8," + escape(icsMSG));
-            //});
             
             let other_times = recipe.others.
                     filter(function(x) {return x.otheruse == 'Boil' || x.otheruse == 'Whirlpool'}).
